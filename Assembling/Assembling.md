@@ -43,25 +43,35 @@ Another parts:
 | 7  |[_LERDGE Optical Endstop_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)  |    2  | 
 | 8  |[_Bolt m3_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)                 |    4  | 30 mm
 | 8  |[_Bolt m3_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)                 |    6  | 22 mm
+| 8  |[_Bearing 608RS_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)                 |    4  
 
 >Step by step assembling
 > 
-![All parts](img/1.jpg)
-![All parts](img/2.jpg)
-![All parts](img/3.jpg)
-![All parts](img/3a.jpg)
-![All parts](img/4.jpg)
-![All parts](img/5.jpg)
-![All parts](img/6.jpg)
-![All parts](img/7.jpg)
-![All parts](img/8.jpg)
-![All parts](img/9.jpg)
-![All parts](img/10.jpg)
-![All parts](img/11.jpg)
-![All parts](img/11a.jpg)
-![All parts](img/12.jpg)
-![All parts](img/13.jpg)
-![All parts](img/14.jpg)
-![All parts](img/15.jpg)
-![All parts](img/16.jpg)
+![All parts](img/syringe_pump/1.jpg)
+![All parts](img/syringe_pump/2.jpg)
+![All parts](img/syringe_pump/3.jpg)
+![All parts](img/syringe_pump/3a.jpg)
+![All parts](img/syringe_pump/4.jpg)
+![All parts](img/syringe_pump/5.jpg)
+![All parts](img/syringe_pump/6.jpg)
+![All parts](img/syringe_pump/7.jpg)
+![All parts](img/syringe_pump/8.jpg)
+![All parts](img/syringe_pump/9.jpg)
+![All parts](img/syringe_pump/10.jpg)
+![All parts](img/syringe_pump/11.jpg)
+![All parts](img/syringe_pump/11a.jpg)
+![All parts](img/syringe_pump/12.jpg)
+![All parts](img/syringe_pump/13.jpg)
+![All parts](img/syringe_pump/14.jpg)
+![All parts](img/syringe_pump/15.jpg)
+![All parts](img/syringe_pump/16.jpg)
+
+
+
+## Getting Started
+
+To get Telegram notification you should generate new Bot and get an Access Token. Talk to [BotFather](https://telegram.me/botfather) and follow a few simple steps described [here](https://core.telegram.org/bots#botfather).
+
+Connect device to PC throughout USB open COM-port terminal and set up the Bot Token for your device:
+
 
