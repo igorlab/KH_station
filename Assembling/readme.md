@@ -56,12 +56,3 @@ Another parts:
 ![All parts](img/syringe_pump/15.jpg)
 ![All parts](img/syringe_pump/16.jpg)
 
-
-
-## Getting Started
-
-To get Telegram notification you should generate new Bot and get an Access Token. Talk to [BotFather](https://telegram.me/botfather) and follow a few simple steps described [here](https://core.telegram.org/bots#botfather).
-
-Connect device to PC throughout USB open COM-port terminal and set up the Bot Token for your device:
-
-
