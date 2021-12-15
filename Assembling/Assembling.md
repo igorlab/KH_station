@@ -46,7 +46,7 @@ Another parts:
 | 8  |[_Bearing 608RS_](https://www.aliexpress.com/item/32888140495.html?spm=a2g0s.9042311.0.0.22244c4dhQX6c2)                 |    4  
 
 >Step by step assembling
-> 
+
 ![All parts](img/syringe_pump/1.jpg)
 ![All parts](img/syringe_pump/2.jpg)
 ![All parts](img/syringe_pump/3.jpg)
@@ -64,7 +64,7 @@ Another parts:
 ![All parts](img/syringe_pump/13.jpg)
 ![All parts](img/syringe_pump/14.jpg)
 ![All parts](img/syringe_pump/15.jpg)
-![All parts](/img/syringe_pump/16.jpg)
+![All parts](img/syringe_pump/16.jpg)
 
 
 
