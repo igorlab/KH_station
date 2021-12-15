@@ -64,7 +64,7 @@ Another parts:
 ![All parts](img/syringe_pump/13.jpg)
 ![All parts](img/syringe_pump/14.jpg)
 ![All parts](img/syringe_pump/15.jpg)
-![All parts](img/syringe_pump/16.jpg)
+![All parts](/img/syringe_pump/16.jpg)
 
 
 
