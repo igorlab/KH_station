@@ -7,8 +7,8 @@ Parts should be printed:
 
 | # |Part name,  *.stl      | Infill    | Amount | Comment |
 |---- |---------------------- | --------- | -------| --------|
-| 1 |_syr2_body.STL_              |     70 %  | 2 |
-| 2 |_atenuator.STL_              |     80 %  | 2
+| 1 |_syringe_body.STL_              |     70 %  | 2 |
+| 2 |_Carriage.STL_              |     80 %  | 2
 | 3  |_syr2_topPL.STL_             |     80 %  | 1
 | 4  |_syr2_topPL_50ml.STL_        |     80 %  | 1
 | 5  |_syr2_driver_50ml.STL_       |     80 %  | 1
