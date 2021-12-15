@@ -43,7 +43,7 @@ Another parts:
 | 7  |[_LERDGE Optical Endstop_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)  |    2  | 
 | 8  |[_Bolt m3_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)                 |    4  | 30 mm
 | 8  |[_Bolt m3_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)                 |    6  | 22 mm
-| 8  |[_Bearing 608RS_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)                 |    4  
+| 8  |[_Bearing 608RS_](https://www.aliexpress.com/item/32888140495.html?spm=a2g0s.9042311.0.0.22244c4dhQX6c2)                 |    4  
 
 >Step by step assembling
 > 
