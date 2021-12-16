@@ -5,35 +5,33 @@
 
 Parts should be printed:
 
-| # |Part name,  *.stl      | Infill    | Amount | Comment |
+| # |Part name                | Infill    | Amount | Comment |
 |---- |---------------------- | --------- | -------| --------|
-| 1 |_syringe_body.STL_              |     70 %  | 2 |
-| 2 |_Carriage.STL_              |     80 %  | 2
-| 3  |_syr2_topPL.STL_             |     80 %  | 1
-| 4  |_syr2_topPL_50ml.STL_        |     80 %  | 1
-| 5  |_syr2_driver_50ml.STL_       |     80 %  | 1
-| 6  |_syr2_voditel.STL_           |     90 %  | 1
-| 7  |_syr2_driver_50ml.STL_           |     90 %  | 1
-| 8  |_syr2_driver.STL_           |     90 %  | 1
-| 9  |_syr2_s_holder_50ml.STL_           |     90 %  | 1
-| 10  |_syr2_s_holder.STL_           |     90 %  | 1
-| 11 |_Opto_holder.STL_           |     40 %  | 1
-| 12  |_Lerdge Optical Endstop MOUNT.STL_           |     40 %  | 1
+| 1 |_syringe_pump_body.STL_              |     70 %  | 2 |
+| 2 |_carriage.STL_              |     80 %  | 2
+| 3  |_motor_mount_plate.STL_             |     80 %  | 1
+| 4  |_motor_mount_plate_50ml.STL_        |     80 %  | 1
+| 5  |_syringe_plunger_retainer.STL_       |     80 %  | 1
+| 6  |_syringe_plunger_retainer_50ml.STL_           |     90 %  | 1
+| 7  |_syringe_retainer.STL_           |     90 %  | 1
+| 8  |_syringe_retainer_50ml.STL_           |     90 %  | 1
+| 9  |_lerdge_optical_endstop_mount_v2.STL_           |     40 %  | 1
 
 Another parts:
 
 | # |Part name     | Pcs    | Length | Comment |
 |---- |---------------------- | --------- | -------| --------|
-| 1 |[_T8 Lead Screw_](https://aliexpi.com/KmXX)                                                                         |    2  | 150 mm |
-| 2 |[_Linear guide MGN12H_](https://aliexpi.com/KmXX)                                                                   |    2  | 125 mm
-| 3  |[_GT2 Pulley 16T-5B_](https://www.aliexpress.com/item/32724156349.html?spm=a2g0s.9042311.0.0.27424c4dbSUZ1x)       |    2  | 
-| 4  |[_GT2 Pulley 20T-5B_](https://www.aliexpress.com/item/32724156349.html?spm=a2g0s.9042311.0.0.27424c4dbSUZ1x)       |    2  | 
-| 5  |[_GT2 Closed Loop Belt_](https://www.aliexpress.com/item/32950422029.html?spm=a2g0s.9042311.0.0.27424c4dVVutuE)    |    2  | 
-| 6  |[_Stop ring 8-14-8_](https://www.aliexpress.com/item/32950422029.html?spm=a2g0s.9042311.0.0.27424c4dVVutuE)        |    2  | 
-| 7  |[_LERDGE Optical Endstop_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)  |    2  | 
-| 8  |[_Bolt m3_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)                 |    4  | 30 mm
-| 8  |[_Bolt m3_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)                 |    6  | 22 mm
-| 8  |[_Bearing 608RS_](https://www.aliexpress.com/item/32888140495.html?spm=a2g0s.9042311.0.0.22244c4dhQX6c2)                 |    4  
+| 1 |[_T8 Lead Screw_](https://aliexpi.com/KmXX)                                                                         |    2  | 150 mm | Lead 2mm|
+| 2 |[_Linear guide MGN12H_](https://shorturl.at/clrG2)                                                                   |    2  | 125 mm
+| 3 |[_GT2 Pulley 16T-5B_](https://www.aliexpress.com/item/32724156349.html?spm=a2g0s.9042311.0.0.27424c4dbSUZ1x)       |    2  | 
+| 4 |[_GT2 Pulley 20T-5B_](https://www.aliexpress.com/item/32724156349.html?spm=a2g0s.9042311.0.0.27424c4dbSUZ1x)       |    2  | 
+| 5 |[_GT2 Closed Loop Belt_](https://www.aliexpress.com/item/32950422029.html?spm=a2g0s.9042311.0.0.27424c4dVVutuE)    |    2  | 
+| 6 |[_Lock ring 8-14-8_](https://www.aliexpress.com/item/32826054805.html?spm=a2g0s.9042311.0.0.27424c4dj0xusA)        |    2  | 
+| 7 |[_LERDGE Optical Endstop_](https://www.aliexpress.com/item/32817734162.html?spm=a2g0s.9042311.0.0.27424c4d7GGfeK)  |    2  | 
+| 8 |_Bolt m3_          |    4  | 30 mm
+| 8 |_Bolt m3_          |    6  | 22 mm
+| 8 |[_Bearing 608RS_](https://www.aliexpress.com/item/32888140495.html?spm=a2g0s.9042311.0.0.22244c4dhQX6c2)                 |    4  
+
 
 >Step by step assembling
 
