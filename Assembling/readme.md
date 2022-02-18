@@ -54,3 +54,120 @@ Another parts:
 ![All parts](img/syringe_pump/15.jpg)
 ![All parts](img/syringe_pump/16.jpg)
 
+## 2. Mounting pumps to the housing
+
+![All parts](img/other/3.jpg)
+![All parts](img/other/1.jpg)
+
+## 3. Mounting of emptying pump, magnetic stirrer, and guide plate
+
+![All parts](img/other/2.jpg)
+![All parts](img/other/8.jpg)
+
+## 4. Assembling of servos and tubes for flow switcher
+
+![All parts](img/other/4.jpg)
+![All parts](img/other/5.jpg)
+![All parts](img/other/6.jpg)
+![All parts](img/other/7.jpg)
+
+## 5. PCB
+
+![All parts](../PCB/img/2.jpg)
+![All parts](../PCB/img/1.jpg)
+![All parts](../PCB/img/3.jpg)
+![All parts](../PCB/img/4.jpg)
+
+## 3. Result should be like this
+
+![All parts](img/1.jpg)
+![All parts](img/2.jpg)
+![All parts](img/3.jpg)
+![All parts](img/4.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
