@@ -4,7 +4,7 @@ Autosampling titrator for measuring of dKH level in saltwater aquarium
 [comment]: <> (![Travis CI status]&#40;https://api.travis-ci.org/witnessmenow/igorlab/KH_station.svg?branch=master&#41;)
 
 [comment]: <> (![Travis CI status]&#40;https://api.travis-ci.org/witnessmenow/igorlab/KH_station.svg?branch=master&#41;)
-![License](https://img.shields.io/github/license/igorlab/KH_station)
+![License](https://img.shields.io/badge/license-GPL3.0-green)
 ![Release stable](https://badgen.net/github/release/igorlab/KH_station/stable)
 
 ![All parts](Assembling/img/front1.jpg)
