@@ -24,13 +24,13 @@ would just like to be kept up to date with the project progress.
 
 4) Set the PASSWORD for your WiFi, e.g. wifipasw_YourWiFi#YourPassword
 
-5) Set the token from email, **ukey_1Egu-78jt7NpQ7gau5d778a299e0a43,67773777**<h3 style="color:#ff4000">Danger</h3>
+5) Set the token from email, **ukey_1Egu-78jt7NpQ7gau5d778a299e0a43,67773777**
 
 6) Set the telegram bot access token, e.g. **bottoken_123789548:RRRRRGseAZ1ikRIhpjGa1-asdfghGVWqwers**
 
 7) Get your telegram ID and set up it to the device so only you have access, **settlgrmid_123456789**
 Restart the device, if all is done fine you see the notification "KH station started" on your chatbot.
-
+<span color="red">red</span>
 ## Calibration
 
 1) Open chatbot, click "Calibrations"
