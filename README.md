@@ -29,6 +29,16 @@ would just like to be kept up to date with the project progress.
 6) Set the telegram bot access token, e.g. bottoken_123789548:RRRRRGseAZ1ikRIhpjGa1-asdfghGVWqwers
 
 7) Get your telegram ID and set up it to the device so only you have access, settlgrmid_123456789
-Restart the device, if all is done fine you see the notification "KH station started" on your bot chat.
+Restart the device, if all is done fine you see the notification "KH station started" on your chatbot.
 
 ## Calibration
+
+1) Open chatbot, click "Calibrations"
+2) Select "Calibrate pumps"
+3) Setup the desired hose-tip over the weighed vessel and click "Run <desired> pump test" 
+4) After ending pumping (beeping three times) measure the mass of the pumped liquid.
+If the mass is out of the admissible* interval the real pumped mass should be sent to the device for correction.
+Click "Set real <PUMP> mass", after that enter the mass, e.g. 24.87
+Repeat calibrations until getting admissible* results.
+
+* reagent 10.00±0.05 g, water 25.00±0.05 g
