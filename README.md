@@ -20,7 +20,7 @@ would just like to be kept up to date with the project progress.
 
 2) To get Telegram notification you should generate new Bot and get an Access Token. Talk to [BotFather](https://telegram.me/botfather) and follow a few simple steps described [here](https://core.telegram.org/bots#botfather).
 
-3) Connect device to PC throughout USB, open COM-port terminal and do next steps
+3) Connect device to PC throughout USB, open COM-port terminal (monitor_speed: 115200) and do next steps
 
 4) Set the PASSWORD for your WiFi, e.g. wifipasw_YourWiFi#YourPassword
 
