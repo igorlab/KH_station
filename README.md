@@ -16,7 +16,7 @@ would just like to be kept up to date with the project progress.
 
 ## Getting Started
 
-1)Register on https://labaqua.net/ get token on email
+1) Register on https://labaqua.net/ get token on email
 
 2) To get Telegram notification you should generate new Bot and get an Access Token. Talk to [BotFather](https://telegram.me/botfather) and follow a few simple steps described [here](https://core.telegram.org/bots#botfather).
 
