@@ -16,6 +16,17 @@ would just like to be kept up to date with the project progress.
 
 ## Getting Started
 
-To get Telegram notification you should generate new Bot and get an Access Token. Talk to [BotFather](https://telegram.me/botfather) and follow a few simple steps described [here](https://core.telegram.org/bots#botfather).
+1)Register on https://labaqua.net/ get token on email
 
-Connect device to PC throughout USB, open COM-port terminal and set up the Bot Token for your device
+2) To get Telegram notification you should generate new Bot and get an Access Token. Talk to [BotFather](https://telegram.me/botfather) and follow a few simple steps described [here](https://core.telegram.org/bots#botfather).
+
+3) Connect device to PC throughout USB, open COM-port terminal and do next steps
+
+4) Set the PASSWORD for your WiFi, e.g. wifipasw_YourWiFi#YourPassword
+
+5) Set the token from email, ukey_token_1Egu-78jt7NpQ7gau5d778a299e0a43,67773777
+
+6) Set the telegram bot access token, e.g. bottoken_123789548:RRRRRGseAZ1ikRIhpjGa1-asdfghGVWqwers
+
+7) Get your telegram ID and set up it to the device so only you have access, settlgrmid_123456789
+Restart the device, if all is done fine you see the notification "KH station started" on your bot chat.
