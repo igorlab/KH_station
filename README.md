@@ -30,7 +30,7 @@ would just like to be kept up to date with the project progress.
 
 7) Get your telegram ID and set up it to the device so only you have access, **settlgrmid_123456789**
 Restart the device, if all is done fine you see the notification "KH station started" on your chatbot.
-<div color="red">red</div>
+
 ## Calibration
 
 1) Open chatbot, click "Calibrations"
