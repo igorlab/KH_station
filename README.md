@@ -24,7 +24,7 @@ would just like to be kept up to date with the project progress.
 
 4) Set the PASSWORD for your WiFi, e.g. wifipasw_YourWiFi#YourPassword
 
-5) Set the token from email, **ukey_1Egu-78jt7NpQ7gau5d778a299e0a43,67773777**
+5) Set the token from email, **ukey_1Egu-78jt7NpQ7gau5d778a299e0a43,67773777**<h3 style="color:#ff0000">Danger</h3>
 
 6) Set the telegram bot access token, e.g. **bottoken_123789548:RRRRRGseAZ1ikRIhpjGa1-asdfghGVWqwers**
 
