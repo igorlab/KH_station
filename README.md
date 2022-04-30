@@ -42,10 +42,5 @@ Click "Set real <PUMP> mass", after that enter the mass, e.g. ***24.87***
 Repeat calibrations until getting admissible¹ results.
 
 ¹ reagent 10.00±0.05 g, water 25.00±0.05 g
-```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
-```
+
+  
