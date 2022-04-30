@@ -24,11 +24,11 @@ would just like to be kept up to date with the project progress.
 
 4) Set the PASSWORD for your WiFi, e.g. wifipasw_YourWiFi#YourPassword
 
-5) Set the token from email, ukey_token_1Egu-78jt7NpQ7gau5d778a299e0a43,67773777
+5) Set the token from email, **ukey_token_1Egu-78jt7NpQ7gau5d778a299e0a43,67773777**
 
-6) Set the telegram bot access token, e.g. bottoken_123789548:RRRRRGseAZ1ikRIhpjGa1-asdfghGVWqwers
+6) Set the telegram bot access token, e.g. **bottoken_123789548:RRRRRGseAZ1ikRIhpjGa1-asdfghGVWqwers**
 
-7) Get your telegram ID and set up it to the device so only you have access, settlgrmid_123456789
+7) Get your telegram ID and set up it to the device so only you have access, **settlgrmid_123456789**
 Restart the device, if all is done fine you see the notification "KH station started" on your chatbot.
 
 ## Calibration
@@ -37,8 +37,8 @@ Restart the device, if all is done fine you see the notification "KH station sta
 2) Select "Calibrate pumps"
 3) Setup the desired hose-tip over the weighed vessel and click "Run <desired> pump test" 
 4) After ending pumping (beeping three times) measure the mass of the pumped liquid.
-If the mass is out of the admissible* interval the real pumped mass should be sent to the device for correction.
-Click "Set real <PUMP> mass", after that enter the mass, e.g. 24.87
-Repeat calibrations until getting admissible* results.
+If the mass is ***out of the admissible[1] interval*** the real pumped mass should be sent to the device for correction.
+Click "Set real <PUMP> mass", after that enter the mass, e.g. ***24.87***
+Repeat calibrations until getting admissible[1] results.
 
-* reagent 10.00±0.05 g, water 25.00±0.05 g
+[1] reagent 10.00±0.05 g, water 25.00±0.05 g
