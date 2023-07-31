@@ -10,6 +10,8 @@ Autosampling titrator for measuring of dKH level in saltwater aquarium
 ![All parts](Assembling/img/front1.jpg)
 ![All parts](Assembling/img/back1.jpg)
 
+[![](https://markdown-videos.vercel.app/youtube/T8ol2PM2Kjg)](https://youtu.be/T8ol2PM2Kjg)
+
 Join the [Arduino Aquarium titrator Group Chat](https://t.me/+Ad4m-7L7tV1lNGNi) if you have any questions/feedback or
 would just like to be kept up to date with the project progress.
 
