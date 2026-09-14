@@ -3,7 +3,51 @@
  *  KH station - службовий завантажувач  /  service loader
  * =============================================================================
  *
+ * -----------------------------------------------------------------------------
+ *  НАЛАШТУЙТЕ ПЕРЕД ЗАЛИВКОЮ
+ *  SET UP BEFORE YOU UPLOAD
+ * -----------------------------------------------------------------------------
+ *
+ *  1) В Arduino IDE - три пункти, усі обовʼязкові:
+ *     In the Arduino IDE - three settings, all required:
+ *
+ *    Tools > Board ................. ESP32 Dev Module
+ *
+ *    Tools > Partition Scheme ...... "Minimal SPIFFS (1.9MB APP with OTA/128KB SPIFFS)"
+ *
+ *        НЕ дефолтна. Прошивка ~1.6 МБ, а дефолтна схема дає лише 1.31 МБ на
+ *        слот - завантаження пройшло б, а встановлення впало б у самому кінці.
+ *        NOT the default. The firmware is ~1.6 MB and the default scheme gives
+ *        only 1.31 MB per slot: the download would succeed, the install would
+ *        fail at the very end.
+ *
+ *    Tools > Erase All Flash Before Sketch Upload ..... Disabled
+ *
+ *        !!! ЯКЩО ТУТ Enabled - ЗАЛИВКА СОТРЕ NVS, тобто саме те калібрування,
+ *        заради збереження якого цей скетч і існує. Усе доведеться міряти знову.
+ *        !!! IF THIS IS Enabled THE UPLOAD WIPES NVS - exactly the calibration
+ *        this tool exists to preserve. Everything would have to be measured again.
+ *
+ *  2) У коді нижче, у блоці ЗАПОВНІТЬ / EDIT, впишіть:
+ *     In the code below, in the ЗАПОВНІТЬ / EDIT block, fill in:
+ *
+ *        WIFI_SSID / WIFI_PASS - назва й пароль вашої Wi-Fi мережі.
+ *        WIFI_SSID / WIFI_PASS - your Wi-Fi network's name and password.
+ *
+ *        FW_BIN_URL вже вказує на офіційну прошивку з цього репозиторію -
+ *        міняйте лише якщо у вас власний форк.
+ *        FW_BIN_URL already points at this repo's official firmware - change
+ *        it only if you are running your own fork.
+ *
+ *  3) Натисніть Upload, відкрийте Serial Monitor на 115200, щоб бачити, що
+ *     відбувається.
+ *     Press Upload, open Serial Monitor at 115200 to watch it work.
+ *
+ * -----------------------------------------------------------------------------
  *  ЩО ЦЕ РОБИТЬ
+ *  WHAT THIS DOES
+ * -----------------------------------------------------------------------------
+ *
  *    1. Читає з памʼяті плати (NVS) усі константи калібрування і друкує їх,
  *       щоб у вас був запис ДО того, як щось відбудеться.
  *    2. Переносить старі назви ключів на ті, які читає поточна прошивка.
@@ -11,7 +55,6 @@
  *
  *    Калібрування зберігається. Помпи й pH-електрод перекалібровувати не треба.
  *
- *  WHAT THIS DOES
  *    1. Reads every calibration constant out of the board's NVS and prints it,
  *       so you have a record before anything happens.
  *    2. Migrates the old key names to the ones the current firmware reads.
@@ -45,33 +88,6 @@
  *    записано жодного байта, а звірка й дамп відпрацюють повністю.
  *    To look first without writing anything, set DRY_RUN to 1 below. The dump
  *    and the comparison still run in full; not a single byte is written.
- *
- * -----------------------------------------------------------------------------
- *  ПЕРЕД ЗАЛИВКОЮ - три пункти в Arduino IDE, усі обовʼязкові
- *  BEFORE YOU UPLOAD - three settings in the Arduino IDE, all required
- * -----------------------------------------------------------------------------
- *
- *    Tools > Board ................. ESP32 Dev Module
- *
- *    Tools > Partition Scheme ...... "Minimal SPIFFS (1.9MB APP with OTA/190KB SPIFFS)"
- *
- *        НЕ дефолтна. Прошивка ~1.6 МБ, а дефолтна схема дає лише 1.31 МБ на
- *        слот - завантаження пройшло б, а встановлення впало б у самому кінці.
- *        NOT the default. The firmware is ~1.6 MB and the default scheme gives
- *        only 1.31 MB per slot: the download would succeed, the install would
- *        fail at the very end.
- *
- *    Tools > Erase All Flash Before Sketch Upload ..... Disabled
- *
- *        !!! ЯКЩО ТУТ Enabled - ЗАЛИВКА СОТРЕ NVS, тобто саме те калібрування,
- *        заради збереження якого цей скетч і існує. Усе доведеться міряти знову.
- *        !!! IF THIS IS Enabled THE UPLOAD WIPES NVS - exactly the calibration
- *        this tool exists to preserve. Everything would have to be measured again.
- *
- *  Далі заповніть три рядки з поміткою ЗАПОВНІТЬ і натисніть Upload.
- *  Відкрийте Serial Monitor на 115200, щоб бачити, що відбувається.
- *  Then fill in the three lines marked ЗАПОВНІТЬ / EDIT and press Upload.
- *  Open Serial Monitor at 115200 to watch it work.
  * =============================================================================
  */
 
@@ -86,8 +102,11 @@
 static const char* WIFI_SSID = "";      // ЗАПОВНІТЬ: назва вашої Wi-Fi мережі
 static const char* WIFI_PASS = "";      // ЗАПОВНІТЬ: пароль від неї
 
-// ЗАПОВНІТЬ: адреса, звідки брати прошивку / where the firmware image lives
-#define FW_BIN_URL "PUT-THE-FIRMWARE-URL-HERE"
+// Офіційна прошивка з цього репозиторію - те саме джерело, що й автооновлення
+// самої прошивки (include/OTA.h, URL_fw_Bin). Міняйте лише для власного форку.
+// This repo's official firmware - the same source the firmware's own OTA updater
+// uses (include/OTA.h, URL_fw_Bin). Change only if you run your own fork.
+#define FW_BIN_URL "https://raw.githubusercontent.com/igorlab/KH_station/master/firmware/firmware.bin"
 
 // ========================== ОПЦІЇ / OPTIONS =================================
 
@@ -461,7 +480,7 @@ static bool checkPartitions() {
     Serial.println();
     Serial.printf("  ЗАМАЛО. Потрібно щонайменше %u байт, тут %u.\n", NEEDED, target->size);
     Serial.println(F("  У вас дефолтна схема розділів. В Arduino IDE поставте"));
-    Serial.println(F("  Tools > Partition Scheme > Minimal SPIFFS (1.9MB APP with OTA/190KB SPIFFS)"));
+    Serial.println(F("  Tools > Partition Scheme > Minimal SPIFFS (1.9MB APP with OTA/128KB SPIFFS)"));
     Serial.println(F("  і залийте цей скетч ще раз."));
     Serial.println(F("  ВАЖЛИВО: калібрування від цього не постраждає, зміна схеми"));
     Serial.println(F("  розділів не чіпає NVS. Просто перезалийте з правильним пунктом."));
@@ -523,7 +542,7 @@ static void installFirmware() {
   Serial.println();
   Serial.println(F("==================== ВСТАНОВЛЕННЯ ==========================="));
 
-  if (strcmp(FW_BIN_URL, "PUT-THE-FIRMWARE-URL-HERE") == 0) {
+  if (strlen(FW_BIN_URL) == 0) {
     Serial.println(F("  Адресу прошивки не задано. Відкрийте скетч, знайдіть"));
     Serial.println(F("  FW_BIN_URL угорі та впишіть адресу."));
     Serial.println(F("  No firmware address set - fill in FW_BIN_URL at the top."));
