@@ -1,7 +1,9 @@
 # KH station
 
-Autosampling titrator that measures carbonate hardness (dKH) in a reef aquarium and
-reports it to Telegram, a web dashboard and [labaqua.net](https://labaqua.net/).
+A little machine that tests your reef tank's KH (carbonate hardness) for you —
+automatically, on a schedule — and texts you the result on Telegram. It also shows a
+live dashboard in your browser and can log every reading to
+[labaqua.net](https://labaqua.net/).
 
 ![License](https://img.shields.io/badge/license-GPL3.0-green)
 ![Release stable](https://badgen.net/github/release/igorlab/KH_station/stable)
@@ -11,65 +13,68 @@ reports it to Telegram, a web dashboard and [labaqua.net](https://labaqua.net/).
 
 [![Build and demo video](https://markdown-videos.vercel.app/youtube/T8ol2PM2Kjg)](https://youtu.be/T8ol2PM2Kjg)
 
-Questions, feedback, or just following along:
+Questions, feedback, or just want to see what other people are building? Join the
 [Arduino Aquarium titrator group chat](https://t.me/+Ad4m-7L7tV1lNGNi).
 
 ---
 
 ## What it does
 
-It performs a real acid–base titration, unattended, on a schedule.
+It runs a real titration — the same kind you'd do by hand with a syringe and a test kit
+— except it does it by itself, on a timer, and tells you the number afterwards.
 
-One cycle:
+One run looks like this:
 
-1. **Home** — both syringes drive to their endstops, so position is known absolutely.
-2. **Load reagent** — the reagent syringe draws 10 ml of HCl *in parallel* with the
-   water work below, because that is dead time otherwise.
-3. **Wash** — the reactor is rinsed with aquarium water and drained, so the previous
-   sample cannot bias this one.
-4. **Aliquot** — 25 ml of aquarium water is drawn and injected into the reactor.
-5. **Settle** — the stirrer runs and the electrode is given time to stop moving.
-6. **Dose** — HCl goes in on a ladder: 3 ml, then 1 ml, then 0.5, 0.25, 0.1, 0.05 and
-   finally 0.01 ml steps as the pH approaches the endpoint. After every dose the
-   firmware *waits for the reading to settle* rather than waiting a fixed time.
+1. **Home** — both syringes move to their limit switches, so the machine knows exactly
+   where they are before it starts.
+2. **Draw reagent** — the reagent syringe pulls in 10 ml of HCl while the water side is
+   busy with the next steps, so no time is wasted.
+3. **Rinse** — the reactor gets flushed with tank water and drained, so nothing from the
+   last test is left behind.
+4. **Take a sample** — 25 ml of tank water goes into the reactor.
+5. **Settle** — the stirrer runs for a bit so the electrode has time to give a steady
+   reading.
+6. **Dose** — acid goes in step by step, starting big (3 ml) and getting finer (down to
+   0.01 ml) as the pH gets close to the endpoint. After each drop, it waits for the
+   reading to actually settle instead of just waiting a fixed number of seconds.
 7. **Endpoint** — dosing stops at **pH 4.10**.
-8. **Return** — both syringes go home, the reactor drains, the result is published.
+8. **Wrap up** — both syringes go home, the reactor drains, and the result is sent out.
 
-KH is computed from the volume of acid consumed:
+The math behind the number:
 
 ```
-KH = (2804 × V_acid × c_HCl) / (V_sample / 1.026)
+KH = (2804 × acid used, ml × acid concentration) / (sample size, ml / 1.026)
 ```
 
-with `c_HCl` and `V_sample` configurable (0.01 M and 25 ml by default; 25 g of 1.025
-density water is 24.39 ml, which is where the 1.026 comes from).
+Defaults are 0.01 mol/L HCl and a 25 ml sample, both of which you can change.
 
-A result that differs from the previous one by more than `maxDeviation` (0.30 dKH by
-default) is not accepted — the station retitrates, up to twice, and reports that it
-could not converge rather than publishing a number it does not trust.
+If a result is more than `maxDeviation` (0.30 dKH by default) away from the last one,
+the station doesn't just report it — it runs again to double-check. If two retries in a
+row still don't agree, it tells you something's off instead of guessing.
 
 ---
 
 ## Repository layout
 
-| Path | What is in it |
+| Path | What's in it |
 |---|---|
-| `firmware/` | `firmware.bin` and `bin_version.txt` — what the device downloads for OTA |
-| `PCB/` | schematics (main board and pH front end) and the BOM |
-| `STL/` | every printed part: syringe pump bodies, carriages, reactor holder, valve rotors, stirrer |
-| `Assembling/` | build photos and assembly notes |
-| `tools/kh_loader/` | one-off service sketch for stations coming from an old firmware |
+| `firmware/` | `firmware.bin` and `bin_version.txt` — what your station downloads when it updates itself |
+| `PCB/` | schematics (main board and pH front end) and the parts list |
+| `STL/` | every 3D-printed part: pump bodies, carriage, reactor holder, valve rotors, stirrer |
+| `Assembling/` | build photos and notes |
+| `tools/kh_loader/` | a small helper sketch for upgrading an older station (see below) |
 
 ---
 
 ## Hardware
 
-- **ESP32** (DOIT DEVKIT V1 or equivalent, 4 MB flash)
-- **Two syringe pumps** — reagent (10 ml) and water (25 ml), stepper driven, each with
-  an optical endstop and a servo-driven rotary valve (fill / inject)
-- **pH electrode** with an amplifier board feeding a plain ADC pin
-- **Magnetic stirrer** (PWM)
-- **Drain pump** for emptying the reactor
+- **ESP32** (DOIT DEVKIT V1 or similar, 4 MB flash)
+- **Two syringe pumps** — one for reagent (10 ml), one for the water sample (25 ml).
+  Each has its own stepper motor, a limit switch for homing, and a small servo-driven
+  valve that switches between filling and injecting.
+- **pH electrode**, read through an amplifier board into the ESP32's ADC
+- **Magnetic stirrer**
+- **Drain pump** to empty the reactor between runs
 
 Pin map (`include/PIN_definition.h`):
 
@@ -77,118 +82,124 @@ Pin map (`include/PIN_definition.h`):
 |---|---|---|---|---|
 | Reagent EN / STEP / DIR | 13 / 12 / 23 | | Water EN / STEP / DIR | 27 / 26 / 19 |
 | Reagent endstop / valve | 16 / 18 | | Water endstop / valve | 5 / 17 |
-| pH input (ADC1_CH7) | 35 | | pH DAC loopback (bench) | 25 |
+| pH input | 35 | | pH loopback for bench testing | 25 |
 | Drain pump | 33 | | Stirrer | 32 |
 | Buzzer | 4 | | | |
 
-GPIO 34–39 are input-only on the ESP32, which is why the pH input lives on 35.
+### Pump speed
 
-### Step rates
+The two pumps don't all move at the same speed — on purpose:
 
-Three separate rates, and the split is deliberate:
-
-| Move | Default | Why |
+| Move | Speed | Why it's set this way |
 |---|---|---|
-| Dose | 1000 Hz | A missed step here goes straight into the KH with nothing to detect it |
-| Fill | 1500 Hz | Also open loop, but not in the measurement path |
-| Home | 3000 Hz | Runs until an endstop fires, so it is free to be fast |
+| Dosing | 1000 Hz | This is the number that becomes your KH result, so it moves carefully |
+| Filling | 1500 Hz | Also matters for accuracy, but less critical, so a bit faster |
+| Homing | 3000 Hz | Just driving to a limit switch, so it can go fast |
 
-All three are settable at runtime (`setdosehz_`, `setfillhz_`, `sethomehz_`).
+You can change any of these later (`setdosehz_`, `setfillhz_`, `sethomehz_`) if you've
+tested your build at a higher speed and trust it.
 
 ---
 
 ## Getting started
 
-### 1. Provision the device
+### 1. Set up the device
 
-Connect over USB and open a serial terminal at **115200 baud**, then send:
+Plug in over USB, open a serial monitor at **115200 baud**, and send these one at a
+time:
 
 ```
 wifipasw_YourSSID#YourPassword
-ukey_<token emailed to you by labaqua.net>
-bottoken_<token from @BotFather>
+ukey_<the token labaqua.net emailed you>
+bottoken_<the token @BotFather gave you>
 settlgrmid_<your numeric Telegram id>
 restart
 ```
 
-`settlgrmid_` matters: it is what stops anyone else driving your station. If all four
-took, the bot greets you with "KH station started" after the restart.
+Don't skip `settlgrmid_` — it's what keeps strangers from being able to control your
+station over Telegram. If everything went through, the bot will say "KH station
+started" once it restarts.
 
-To get the Telegram token, talk to [BotFather](https://telegram.me/botfather) and
-follow the [documented steps](https://core.telegram.org/bots#botfather).
+Need a Telegram bot token? Message [BotFather](https://telegram.me/botfather) — it
+walks you through it in under a minute ([full instructions](https://core.telegram.org/bots#botfather)).
 
 ### 2. Calibrate the pumps
 
-Volume accuracy is the largest term in the result, so do this before trusting a number.
+This is the step that matters most for accuracy, so it's worth doing properly before you
+trust any reading.
 
-1. Telegram → **Calibrations** → **Calibrate pumps**
-2. Put the hose tip over a weighed vessel, run **Run \<pump\> pump test**
+1. In Telegram: **Calibrations** → **Calibrate pumps**
+2. Put the tube over a cup on a scale and run **Run \<pump\> pump test**
 3. When it beeps three times, weigh what came out
-4. If it is outside tolerance, send the real mass back: **Set real \<pump\> mass**, then
-   e.g. `24.87`
-5. Repeat until it lands
+4. Not quite right? Send the real weight back with **Set real \<pump\> mass**, e.g. `24.87`
+5. Repeat until it's spot on
 
-Tolerance: **reagent 10.00 ± 0.05 g, water 25.00 ± 0.05 g.**
+Target: **reagent 10.00 ± 0.05 g, water 25.00 ± 0.05 g.**
 
 ### 3. Calibrate the pH electrode
 
-The shipped calibration line is a placeholder. Two-point, using 4.01 and 6.86 buffers:
+The station ships with a placeholder calibration — you'll want to set your own with two
+buffer solutions, 4.01 and 6.86:
 
-1. Rinse the electrode with deionised water, put it in the 4.01 buffer
-2. Press **Start reading pH** (web) or `readph` (serial), wait for the value to settle
+1. Rinse the electrode and put it in the 4.01 buffer
+2. Press **Start reading pH** (web) or send `readph` (serial), and wait for the number
+   to stop moving
 3. Send `calph_4.01`
-4. Rinse, repeat in the 6.86 buffer, send `calph_6.86`
+4. Rinse, switch to the 6.86 buffer, and send `calph_6.86`
 
-Do not skip step 2. Calibrating without the reading running stores a value the filter
-has not converged to, and every KH afterwards is computed from a wrong line.
+Don't skip the "wait for it to settle" part in step 2 — calibrating on a reading that
+hasn't stabilized yet locks in a slightly wrong number, and every KH result after that
+inherits the error.
 
 ---
 
 ## Web dashboard
 
-`http://<device-ip>/` — one page, no internet required, no CDN.
+Just open `http://<device-ip>/` — nothing to install, no internet connection needed.
 
-- **Station diagram** — both syringes with their live contents, the reactor, the tubes,
-  the stirrer, and the numbers you actually watch: pH, KH and ml dosed
-- **Titration curve** — pH against volume dosed, one point per step. Point at it and it
-  names the nearest step; outside a run it plots pH against time for calibration
-- **Console** — the machine's own log, streamed live, not a 30-second snapshot
-- **Readings** — everything in NVS, including the correction index and reagent stock
-- **Pumps / Settings** — collapsed by default; they are setup, not daily driving
+- **Station diagram** — both syringes, the reactor, the tubing, the stirrer, plus the
+  numbers you actually care about: pH, KH, ml dosed
+- **Titration curve** — pH plotted against volume as it doses, so you can see the shape
+  of the run; between runs it just plots pH over time
+- **Console** — a live feed of what the station is doing, not a stale snapshot
+- **Readings** — every stored value, including the correction index and how much
+  reagent you have left
+- **Pumps / Settings** — tucked away since you'll rarely need them day to day
 
-Every button confirms before it moves anything.
+Every button asks for confirmation before it actually moves anything.
 
-> The dashboard has **no authentication**. Keep the station on a network you trust and
-> do not forward its port.
+> There's no login on the dashboard. Keep the station on a network you trust, and don't
+> expose it to the internet.
 
 ---
 
 ## Command reference
 
-Commands work over serial, Telegram and `http://<device-ip>/commands?param=<command>`.
-Those marked ⚠ move hardware and are refused while a titration is running.
+These work the same way over serial, Telegram, and
+`http://<device-ip>/commands?param=<command>`. Anything marked ⚠ moves hardware and
+won't run while a titration is in progress.
 
 **Titration**
 
-| Command | Effect |
+| Command | What it does |
 |---|---|
-| `titr_1` ⚠ | Run one titration now |
-| `stoptitr` | Abort the running titration; both syringes return home |
+| `titr_1` ⚠ | Start a titration right now |
+| `stoptitr` | Stop the current run; both syringes return home |
 | `washreactor` ⚠ | Rinse and drain the reactor |
-| `refilreagent` ⚠ | Prime the reagent line |
-| `allhome` ⚠ | Drive both syringes to their endstops |
-| `lastkh`, `counttitr`, `lastlog` | Last result, cycle counters, last run's log |
+| `refilreagent` ⚠ | Top up the reagent line |
+| `allhome` ⚠ | Send both syringes home |
+| `lastkh`, `counttitr`, `lastlog` | Last result, run count, log from the last run |
 
 **pH**
 
-| Command | Effect |
+| Command | What it does |
 |---|---|
-| `readph` / `stopreadph` | Start / stop continuous reading |
-| `calph_4.01`, `calph_6.86` | Store a calibration point |
-| `phwait_<ms>_<eps>_<n>_<timeout>` | Settle detector: sample period, tolerance, consecutive samples, give-up time |
-| `phfilter_<mea>_<est>_<q>` | Kalman constants — changing these changes the measured pH |
-| `phsim_1` / `phsim_0` | Bench simulator instead of the electrode |
-| `phloop_1` / `phloop_0` | DAC loopback (see below) |
+| `readph` / `stopreadph` | Start / stop live reading |
+| `calph_4.01`, `calph_6.86` | Save a calibration point |
+| `phwait_<ms>_<eps>_<n>_<timeout>` | Tune how the station decides a reading has settled |
+| `phfilter_<mea>_<est>_<q>` | Advanced: filter tuning — changes the measured pH itself |
+| `phsim_1` / `phsim_0` | Use a simulated reading instead of the real electrode |
+| `phloop_1` / `phloop_0` | Bench-test mode without a probe at all (see below) |
 
 **Settings**
 
@@ -200,7 +211,7 @@ Those marked ⚠ move hardware and are refused while a titration is running.
 | `setrvolume_<L>` | 5.0 (reagent stock) |
 | `setdosehz_` / `setfillhz_` / `sethomehz_` | 1000 / 1500 / 3000 |
 | `stirrerd_<0..255>` | 220 |
-| `settings`, `getcalvalues` | Dump everything currently stored |
+| `settings`, `getcalvalues` | Show everything that's currently stored |
 
 **System**
 
@@ -210,67 +221,43 @@ Those marked ⚠ move hardware and are refused while a titration is running.
 
 ## Firmware updates
 
-The station checks `firmware/bin_version.txt` in this repository and, if it differs
-from what it is running, offers the update in Telegram under **Update**. `updatedevice`
-downloads `firmware/firmware.bin` over HTTPS and flashes it.
-
-Certificates are verified against the ESP32 root CA bundle, so nothing has to be
-re-pinned when GitHub rotates its issuing CA.
-
-The partition table (`minimal_SPIFFS.csv`) gives each OTA slot **1,966,080 bytes**.
-Check a new build fits before publishing it.
+The station checks `firmware/bin_version.txt` in this repo, and if there's a newer
+version, it'll offer to update from the Telegram **Update** menu. Sending
+`updatedevice` downloads `firmware/firmware.bin` over a secure connection and installs
+it — no cable needed.
 
 ---
 
-## Updating a station that has been running for years
+## Upgrading a station that's been running for a long time
 
-**Read this before OTA-ing a device that is still on 2.2.x.**
+**If your station is still on firmware 2.2.x, read this before updating.**
 
-Old firmware stored some of its settings under different NVS key names — the keys
-carried a `state.` prefix, and `state.r_usd_vol` is exactly 15 characters, which is the
-longest key name NVS accepts. The current firmware reads the short names:
+Older firmware saved a few settings (your sample size, last result, reagent used so
+far) under different internal names than the current firmware looks for. Update
+straight over the air and those won't carry over — the station will quietly reset them
+to factory defaults instead of telling you anything changed.
 
-| Old key | Current key |
-|---|---|
-| `vol_w_ml` | `w_volume` |
-| `vol_r_ml` | `r_volume` |
-| `state.lastkh` | `lastkh` |
-| `state.r_usd_vol` | `r_usd_vol` |
-| `state.countTitr` | `countTitr` |
+`tools/kh_loader/kh_loader.ino` fixes this for you. Flash it once from the Arduino IDE
+and it will:
 
-Update straight over the air and the new firmware will not find those, and will quietly
-fall back to factory defaults — your sample volume, your last result and your reagent
-usage counter, gone, with nothing on screen to say so.
+1. **Print out everything** currently stored, so you have a record
+2. **Carry over** your old settings to where the new firmware expects them
+3. **Connect to Wi-Fi and install the latest firmware**
 
-`tools/kh_loader/kh_loader.ino` exists for exactly this. Flash it once from the Arduino
-IDE and it will:
+Your pump and pH calibration are untouched either way — no need to redo those.
 
-1. **Print everything** in NVS first, so you have a written record before anything
-   happens
-2. **Copy** each old key to its current name
-3. **Connect to Wi-Fi and install the current firmware** over the air
+It's safe to run more than once: it only ever fills in a setting that's missing. If
+both an old and a new copy of a setting already exist, it leaves both alone and just
+shows you what it found.
 
-Pump and pH calibration are not affected — those key names never changed, so there is no
-need to recalibrate.
-
-The one rule the sketch follows, and the reason it is safe to run twice:
-
-> **It never overwrites a value that already exists.** A write happens in exactly one
-> case — the old key is present and the new one is not. If both exist, the values are
-> compared, shown to you, and left alone.
-
-It does not erase NVS, format flash, or reset anything. Set `DRY_RUN` to `1` at the top
-and it writes not a single byte while still doing the full dump and comparison.
-
-Three Arduino IDE settings are required, and the second one is the one people miss:
+Three things to set in the Arduino IDE first (the second one trips people up):
 
 - **Board** → ESP32 Dev Module
-- **Partition Scheme** → *Minimal SPIFFS (1.9MB APP with OTA/190KB SPIFFS)* — not the
-  default. The firmware is ~1.6 MB and the default scheme gives only 1.31 MB per slot,
-  so the download would succeed and the install would fail at the very end
+- **Partition Scheme** → *Minimal SPIFFS (1.9MB APP with OTA/128KB SPIFFS)* — the
+  default scheme doesn't leave enough room and the install will fail right at the end
 - **Upload Speed** → 115200
 
-Stations already on 2.3.x can update normally from Telegram; they are past the rename.
+Already on 2.3 or newer? You can just update normally from Telegram.
 
 ---
 
@@ -281,54 +268,49 @@ pio run                 # build
 pio run -t upload       # flash over USB
 ```
 
-The platform is pinned in `platformio.ini`:
+`platformio.ini` points at a specific fork of the ESP32 platform:
 
 ```ini
 platform = https://github.com/pioarduino/platform-espressif32.git#55.03.311
 ```
 
-That is **pioarduino**, not `platformio/espressif32`. The official platform never left
-Arduino core 2.0.17 — 7.1.3 still pins it — so it is the only route to core 3.x.
-55.03.311 is Arduino core 3.3.11 / ESP-IDF 5.5.5 / GCC 14.2.
+That's intentional — the mainstream platform hasn't caught up to the newer Arduino
+core yet, so this project uses the [pioarduino](https://github.com/pioarduino/platform-espressif32)
+fork instead, pinned to an exact version so a future update can't change the build
+under you.
 
-The tag is exact on purpose. A floating ref would move the compiler under firmware that
-drives syringes from a timer ISR.
+**Upload speed needs to stay at 115200** — faster speeds don't work reliably with this
+board and cable combination.
 
-**Upload speed is 115200.** Higher rates fail here: the esptool pioarduino ships loads
-its stub, switches baud, and then gets no answer to the next command.
-
-Nothing secret belongs in this repository. Wi-Fi credentials, the Telegram token, the
-chat id and the labaqua key all live in the device's NVS and are set with the commands
-above.
+Nothing secret lives in this repository. Your Wi-Fi password, Telegram token, chat ID
+and labaqua key are all stored on the device itself, set with the commands above —
+never in the source code.
 
 ---
 
-## Testing without a pH board
+## Testing without a pH probe connected
 
-`phloop_1` turns the ESP32's DAC1 into a stand-in electrode. Jumper **GPIO25 → GPIO35**
-and the firmware synthesises the voltage it expects to read, then reads it back through
-the real ADC with the simulator switched *off* — so `analogRead`, the oversampling, the
-Kalman filter and the stored calibration line are all genuinely exercised.
+Send `phloop_1` and the ESP32 will simulate an electrode for you: it generates a
+voltage internally and reads it back, so everything downstream — filtering,
+calibration, the math — runs exactly as it would with a real probe. You'll need a
+jumper wire from **GPIO25 to GPIO35** for this to work; if it doesn't detect one, it'll
+tell you.
 
-It sweeps all 256 DAC codes once and keeps the mapping the ADC actually returned,
-rather than assuming the DAC is linear against it. If the sweep reports a tiny span, the
-jumper is missing and it says so.
-
-Deliberately not saved to NVS: a bench rig that survived a reboot into production would
-be worse than retyping the command.
+It's meant for testing only and is never saved — every restart goes back to the real
+electrode, so you can't accidentally leave a station running on fake readings.
 
 ---
 
-## What the station refuses to do
+## Built-in safety checks
 
-- **Dose into an implausible sample.** If the settled starting pH is below the endpoint,
-  or the ADC sits on a rail, the cycle aborts with *"pH input does not look like an
-  electrode"* instead of dosing nothing and reporting KH 0.00.
-- **Accept a run that dosed nothing.** Zero volume is never a valid result.
-- **Publish a result it does not trust.** Outside `maxDeviation`, it retitrates; twice
-  in a row without converging and it reports the failure.
-- **Keep moving after a stop.** `stoptitr` kills the current move and walks both
-  syringes home, so nothing is left loaded.
+- **Won't dose into a sample that looks wrong.** If the starting pH doesn't look like
+  water — say, the probe isn't actually connected — it stops and tells you, instead of
+  quietly reporting a KH of 0.00.
+- **Won't report a run that used zero reagent.** That's never a real result.
+- **Won't publish a number it doesn't trust.** If a result disagrees with the last one,
+  it retries; after two disagreements in a row, it tells you rather than guessing.
+- **Always returns home after a stop.** Hit `stoptitr` and both syringes go back to a
+  known position — nothing is left loaded or half-moved.
 
 ---
 
