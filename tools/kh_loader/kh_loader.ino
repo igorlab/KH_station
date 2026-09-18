@@ -32,7 +32,11 @@
  *     In the code below, in the ЗАПОВНІТЬ / EDIT block, fill in:
  *
  *        WIFI_SSID / WIFI_PASS - назва й пароль вашої Wi-Fi мережі.
+ *        Можна лишити порожніми: тоді скетч візьме мережу, до якої станція
+ *        вже підключалася сама.
  *        WIFI_SSID / WIFI_PASS - your Wi-Fi network's name and password.
+ *        May be left empty: the sketch then uses the network the station
+ *        itself was already connecting to.
  *
  *        FW_BIN_URL вже вказує на офіційну прошивку з цього репозиторію -
  *        міняйте лише якщо у вас власний форк.
@@ -93,12 +97,16 @@
 
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-#include <HTTPUpdate.h>
+#include <HTTPClient.h>
+#include <Update.h>
 #include <Preferences.h>
 #include <esp_ota_ops.h>
+#include <esp_wifi.h>
 
 // ======================= ЗАПОВНІТЬ / EDIT ===================================
 
+// Порожньо = мережа, збережена на платі (та, до якої підключалася станція).
+// Empty = the network saved on the board (the one the station was using).
 static const char* WIFI_SSID = "";      // ЗАПОВНІТЬ: назва вашої Wi-Fi мережі
 static const char* WIFI_PASS = "";      // ЗАПОВНІТЬ: пароль від неї
 
@@ -496,17 +504,27 @@ static bool connectWiFi() {
   Serial.println();
   Serial.println(F("======================== WI-FI ==============================="));
 
-  if (strlen(WIFI_SSID) == 0) {
-    Serial.println(F("  Назву мережі не задано. Відкрийте цей скетч, знайдіть рядки"));
-    Serial.println(F("  з поміткою ЗАПОВНІТЬ угорі, впишіть назву мережі й пароль,"));
-    Serial.println(F("  і залийте ще раз."));
-    Serial.println(F("  No Wi-Fi name set - fill in the lines marked EDIT at the top."));
-    return false;
-  }
-
-  Serial.printf("  підключаюся до \"%s\" ", WIFI_SSID);
   WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+
+  if (strlen(WIFI_SSID) == 0) {
+    // The station saves its network (WiFiManager) in the Wi-Fi driver's own
+    // flash area, which uploading this sketch does not touch - reuse it.
+    wifi_config_t saved = {};
+    esp_wifi_get_config(WIFI_IF_STA, &saved);
+    if (saved.sta.ssid[0] == 0) {
+      Serial.println(F("  Назву мережі не задано, і на платі немає збереженої мережі."));
+      Serial.println(F("  Відкрийте цей скетч, знайдіть рядки з поміткою ЗАПОВНІТЬ"));
+      Serial.println(F("  угорі, впишіть назву мережі й пароль, і залийте ще раз."));
+      Serial.println(F("  No Wi-Fi name set and none saved on the board - fill in the"));
+      Serial.println(F("  lines marked EDIT at the top."));
+      return false;
+    }
+    Serial.printf("  підключаюся до збереженої мережі \"%s\" ", reinterpret_cast<const char*>(saved.sta.ssid));
+    WiFi.begin();
+  } else {
+    Serial.printf("  підключаюся до \"%s\" ", WIFI_SSID);
+    WiFi.begin(WIFI_SSID, WIFI_PASS);
+  }
 
   const uint32_t started = millis();
   while (WiFi.status() != WL_CONNECTED && millis() - started < 30000) {
@@ -529,13 +547,26 @@ static bool connectWiFi() {
   return true;
 }
 
-static void onProgress(int done, int total) {
+static void onProgress(size_t done, size_t total) {
   static int lastPct = -1;
-  const int pct = total ? (done * 100 / total) : 0;
+  const int pct = total ? static_cast<int>(done * 100 / total) : 0;
   if (pct != lastPct && pct % 5 == 0) {
-    Serial.printf("  %3d%%  %d / %d байт\n", pct, done, total);
+    Serial.printf("  %3d%%  %u / %u байт\n", pct,
+                  static_cast<unsigned>(done), static_cast<unsigned>(total));
     lastPct = pct;
   }
+}
+
+static void printInstallFailed(const char* what) {
+  Serial.println();
+  Serial.printf("  НЕ ВДАЛОСЯ: %s\n", what);
+  Serial.println();
+  Serial.println(F("  ВАШЕ КАЛІБРУВАННЯ НЕ ПОСТРАЖДАЛО, плата працює як раніше."));
+  Serial.println(F("  Your calibration is untouched and the board still works."));
+  Serial.println(F("  Найчастіші причини:"));
+  Serial.println(F("    - не та схема розділів (див. примітку вгорі файлу)"));
+  Serial.println(F("    - адреса неправильна або файл недоступний"));
+  Serial.println(F("    - мережа обірвалася під час завантаження, спробуйте ще раз"));
 }
 
 static void installFirmware() {
@@ -563,35 +594,56 @@ static void installFirmware() {
                          (size_t)(rootca_crt_bundle_end - rootca_crt_bundle_start));
 #endif
 
-  httpUpdate.onProgress(onProgress);
-  httpUpdate.rebootOnUpdate(true);
-
-  const t_httpUpdate_return ret = httpUpdate.update(client, FW_BIN_URL);
-
-  switch (ret) {
-    case HTTP_UPDATE_OK:
-      // Сюди не доходить: плата перезавантажується всередині update().
-      Serial.println(F("  Готово. Перезавантаження у нову прошивку."));
-      break;
-
-    case HTTP_UPDATE_NO_UPDATES:
-      Serial.println(F("  Сервер каже, що встановлювати нічого."));
-      break;
-
-    case HTTP_UPDATE_FAILED:
-      Serial.println();
-      Serial.printf("  НЕ ВДАЛОСЯ (%d): %s\n",
-                    httpUpdate.getLastError(),
-                    httpUpdate.getLastErrorString().c_str());
-      Serial.println();
-      Serial.println(F("  ВАШЕ КАЛІБРУВАННЯ НЕ ПОСТРАЖДАЛО, плата працює як раніше."));
-      Serial.println(F("  Your calibration is untouched and the board still works."));
-      Serial.println(F("  Найчастіші причини:"));
-      Serial.println(F("    - не та схема розділів (див. примітку вгорі файлу)"));
-      Serial.println(F("    - адреса неправильна або файл недоступний"));
-      Serial.println(F("    - мережа обірвалася під час завантаження, спробуйте ще раз"));
-      break;
+  // Not httpUpdate.update(). Arduino core 3's HTTPUpdate checks the first body
+  // byte with tcp->peek() != 0xE9, and peek() returns -1 when that byte has not
+  // arrived yet - which over TLS it often has not. A perfectly good image is then
+  // rejected as "Verify Bin Header Failed" (-106). The firmware hit exactly this
+  // (2.4.0/2.4.1, fixed in its include/OTA.h); this sketch had the same call.
+  // Update::writeStream() waits for the data instead, and Update itself checks
+  // the 0xE9 magic byte on the first block, so no safety is lost.
+  HTTPClient http;
+  http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+  http.setTimeout(20000);
+  if (!http.begin(client, FW_BIN_URL)) {
+    printInstallFailed("не вдалося відкрити адресу / could not open the URL");
+    return;
   }
+
+  const int code = http.GET();
+  if (code != HTTP_CODE_OK) {
+    char what[96];
+    snprintf(what, sizeof(what), "HTTP %d (%s)", code, http.errorToString(code).c_str());
+    http.end();
+    printInstallFailed(what);
+    return;
+  }
+
+  const int len = http.getSize();
+  if (len <= 0 || !Update.begin(static_cast<size_t>(len))) {
+    http.end();
+    printInstallFailed(len <= 0 ? "сервер не повідомив розмір / no size from server"
+                                : Update.errorString());
+    return;
+  }
+
+  Update.onProgress(onProgress);
+  const size_t written = Update.writeStream(http.getStream());
+  const bool ok = written == static_cast<size_t>(len) && Update.end() && Update.isFinished();
+  http.end();
+
+  if (!ok) {
+    char what[96];
+    snprintf(what, sizeof(what), "записано %u з %d байт: %s",
+             static_cast<unsigned>(written), len, Update.errorString());
+    Update.abort();
+    printInstallFailed(what);
+    return;
+  }
+
+  Serial.println(F("  Готово. Перезавантаження у нову прошивку."));
+  Serial.println(F("  Done. Rebooting into the new firmware."));
+  delay(500);
+  ESP.restart();
 }
 
 void setup() {

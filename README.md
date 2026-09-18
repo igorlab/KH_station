@@ -105,20 +105,29 @@ tested your build at a higher speed and trust it.
 
 ### 1. Set up the device
 
-Plug in over USB, open a serial monitor at **115200 baud**, and send these one at a
-time:
+**Wi-Fi first.** On its first start the station opens its own Wi-Fi access point called
+**AutoConnectAP**. Join it from your phone, pick your network and type its password —
+the station remembers it and connects from then on. (It opens AutoConnectAP again
+whenever it can't reach that network at startup.)
+
+Then give it the rest — either on the page `http://<device-ip>/settings`, or over USB
+with a serial monitor at **115200 baud**, one line at a time:
 
 ```
-wifipasw_YourSSID#YourPassword
-ukey_<the token labaqua.net emailed you>
 bottoken_<the token @BotFather gave you>
 settlgrmid_<your numeric Telegram id>
-restart
+ukey_<the token labaqua.net emailed you>
 ```
 
-Don't skip `settlgrmid_` — it's what keeps strangers from being able to control your
-station over Telegram. If everything went through, the bot will say "KH station
-started" once it restarts.
+`ukey_` restarts the station, so send it last. Don't skip `settlgrmid_` — it's what
+keeps strangers from being able to control your station over Telegram. If everything
+went through, the bot will say "KH station started" once it restarts.
+
+**Optional: a backup Wi-Fi network** (firmware 2.5.4 and newer). If the main network is
+unreachable for a minute, the station joins the backup by itself and tells you in
+Telegram. Set it on the `/settings` page, or with
+`wifibackup_<network name>#<password>`. `wifibackup` shows which network it is on,
+`wifiswitch` changes over by hand.
 
 Need a Telegram bot token? Message [BotFather](https://telegram.me/botfather) — it
 walks you through it in under a minute ([full instructions](https://core.telegram.org/bots#botfather)).
@@ -155,8 +164,11 @@ inherits the error.
 
 ## Web dashboard
 
-Just open `http://<device-ip>/` — nothing to install, no internet connection needed.
+Just open `http://<device-ip>/` — or `http://kh-station.local/` — nothing to install, no
+internet connection needed.
 
+- **Header** — the latest KH, what the station is doing, and on the right the firmware
+  version, the Wi-Fi network (orange when it's the backup) and its signal as 0–5 bars
 - **Station diagram** — both syringes, the reactor, the tubing, the stirrer, plus the
   numbers you actually care about: pH, KH, ml dosed
 - **Titration curve** — pH plotted against volume as it doses, so you can see the shape
@@ -250,12 +262,18 @@ It's safe to run more than once: it only ever fills in a setting that's missing.
 both an old and a new copy of a setting already exist, it leaves both alone and just
 shows you what it found.
 
-Three things to set in the Arduino IDE first (the second one trips people up):
+What to set in the Arduino IDE first (the second one trips people up):
 
 - **Board** → ESP32 Dev Module
 - **Partition Scheme** → *Minimal SPIFFS (1.9MB APP with OTA/128KB SPIFFS)* — the
   default scheme doesn't leave enough room and the install will fail right at the end
 - **Upload Speed** → 115200
+- **Erase All Flash Before Sketch Upload** → *Disabled* — otherwise the upload itself
+  wipes the calibration this sketch exists to keep
+
+It connects to the Wi-Fi network your station already uses, so there is usually
+nothing to type into the sketch. To use a different network, fill in `WIFI_SSID` and
+`WIFI_PASS` at the top.
 
 Already on 2.3 or newer? You can just update normally from Telegram.
 
