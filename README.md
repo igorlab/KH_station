@@ -118,7 +118,8 @@ itself, so after a power cut it comes back even if the router starts slower than
 minutes.
 
 With those in hand, give it the rest — either on the page
-`http://<device-ip>/settings`, or over USB with a serial monitor at **115200 baud**,
+`http://kh-station.local/settings` (linked at the bottom of the dashboard; it shows what
+is already set), or over USB with a serial monitor at **115200 baud**,
 one line at a time:
 
 ```
@@ -219,7 +220,7 @@ won't run while a titration is in progress.
 | `calph_4.01`, `calph_6.86` | Save a calibration point |
 | `phwait_<ms>_<eps>_<n>_<timeout>` | Tune how the station decides a reading has settled |
 | `phfilter_<mea>_<est>_<q>` | Advanced: filter tuning — changes the measured pH itself |
-| `phsim_1` / `phsim_0` | Use a simulated reading instead of the real electrode |
+| `phsim_1` / `phsim_0` | Use a simulated reading instead of the real electrode — until the next restart; the station always starts on the real electrode (firmware 2.5.15 and newer) |
 | `phloop_1` / `phloop_0` | Bench-test mode without a probe at all (see below) |
 
 **Settings**
