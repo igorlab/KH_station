@@ -108,7 +108,9 @@ tested your build at a higher speed and trust it.
 **Wi-Fi first.** On its first start the station opens its own Wi-Fi access point called
 **AutoConnectAP**. Join it from your phone, pick your network and type its password —
 the station remembers it and connects from then on. (It opens AutoConnectAP again
-whenever it can't reach that network at startup.)
+whenever it can't reach that network at startup — but since firmware 2.5.6 it no longer
+waits there: it keeps titrating, looks for its network every minute and reconnects by
+itself, so after a power cut it comes back even if the router starts slower than it.)
 
 Then give it the rest — either on the page `http://<device-ip>/settings`, or over USB
 with a serial monitor at **115200 baud**, one line at a time:
@@ -121,7 +123,10 @@ ukey_<the token labaqua.net emailed you>
 
 `ukey_` restarts the station, so send it last. Don't skip `settlgrmid_` — it's what
 keeps strangers from being able to control your station over Telegram. If everything
-went through, the bot will say "KH station started" once it restarts.
+went through, the bot will say "KH station started" once it restarts. Since firmware
+2.5.13 that message also says **why** the station restarted — power cut, a dip in the
+power supply, a crash or a command — and `lastreset` repeats it. If your station keeps
+restarting on its own, that line is the thing to send when you ask for help.
 
 **Optional: a backup Wi-Fi network** (firmware 2.5.4 and newer). If the main network is
 unreachable for a minute, the station joins the backup by itself and tells you in
