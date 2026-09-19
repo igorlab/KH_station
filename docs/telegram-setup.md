@@ -81,13 +81,19 @@ seconds, and this page stays empty — use @userinfobot then.
 
 ## 3. Give both to the station
 
-The first time, this has to be done on the station's settings page or over USB — the
+The first time, this has to be done on the station's setup page or over USB — the
 bot doesn't know you yet, so it won't take commands from you in Telegram.
 
-**On the settings page.** Open `http://kh-station.local/settings` (or
-`http://<device-ip>/settings`), paste the token into **Telegram Bot token** and the ID
-into **Telegram UserID**, and press **Submit**. Empty fields are left as they are, so
-later you can change one of them without retyping the other.
+**On the setup page.** Open `http://kh-station.local/settings` (or
+`http://<device-ip>/settings`, or the **station setup** link at the bottom of the
+dashboard). In the **Telegram** box, paste the token into **Bot token** and your ID
+into **Your chat ID**, and press **Save**. The page comes back with "Saved: Telegram bot
+token, chat ID", and under each field shows what the station has stored now — the
+token only by its last six characters. Empty fields are left as they are, so later you
+can change one of them without retyping the other.
+
+(Firmware older than 2.5.15 has a plainer page: the fields are **Telegram Bot token**
+and **Telegram UserID**, the button is **Submit**, and it doesn't show what is stored.)
 
 **Or over USB**, in a serial monitor at 115200 baud, one line at a time:
 
@@ -110,7 +116,8 @@ on you can do everything from the chat.
 - **You didn't press Start in your bot.** Open it and press Start (or send any message).
 - **The ID is wrong.** It must be digits only — no @username, no spaces. The station
   obeys exactly one chat, so with a wrong ID it answers nobody, and you can't fix it
-  from Telegram. Enter it again on the settings page or over USB.
+  from Telegram. The setup page shows the ID the station has now, under the field —
+  compare it with yours and enter it again if it differs.
 - **The token is incomplete.** It must be the whole line from BotFather, digits before
   the colon included. The station only refuses one that is clearly too short (it replies
   `BOTtoken is wrong`), so a token that lost a few characters on the way can still be
