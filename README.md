@@ -62,6 +62,7 @@ row still don't agree, it tells you something's off instead of guessing.
 | `PCB/` | schematics (main board and pH front end) and the parts list |
 | `STL/` | every 3D-printed part: pump bodies, carriage, reactor holder, valve rotors, stirrer |
 | `Assembling/` | build photos and notes |
+| `docs/` | step-by-step guides — [creating your Telegram bot and finding your ID](docs/telegram-setup.md) |
 | `tools/kh_loader/` | a small helper sketch for upgrading an older station (see below) |
 
 ---
@@ -112,8 +113,13 @@ whenever it can't reach that network at startup — but since firmware 2.5.6 it 
 waits there: it keeps titrating, looks for its network every minute and reconnects by
 itself, so after a power cut it comes back even if the router starts slower than it.)
 
-Then give it the rest — either on the page `http://<device-ip>/settings`, or over USB
-with a serial monitor at **115200 baud**, one line at a time:
+**Then Telegram.** You need a bot of your own and your numeric Telegram ID —
+**[Setting up Telegram](docs/telegram-setup.md)** walks you through both in about five
+minutes.
+
+With those in hand, give it the rest — either on the page
+`http://<device-ip>/settings`, or over USB with a serial monitor at **115200 baud**,
+one line at a time:
 
 ```
 bottoken_<the token @BotFather gave you>
@@ -126,16 +132,14 @@ keeps strangers from being able to control your station over Telegram. If everyt
 went through, the bot will say "KH station started" once it restarts. Since firmware
 2.5.13 that message also says **why** the station restarted — power cut, a dip in the
 power supply, a crash or a command — and `lastreset` repeats it. If your station keeps
-restarting on its own, that line is the thing to send when you ask for help.
+restarting on its own, that line is the thing to send when you ask for help. Bot
+silent? See [If the bot stays silent](docs/telegram-setup.md#if-the-bot-stays-silent).
 
 **Optional: a backup Wi-Fi network** (firmware 2.5.4 and newer). If the main network is
 unreachable for a minute, the station joins the backup by itself and tells you in
 Telegram. Set it on the `/settings` page, or with
 `wifibackup_<network name>#<password>`. `wifibackup` shows which network it is on,
 `wifiswitch` changes over by hand.
-
-Need a Telegram bot token? Message [BotFather](https://telegram.me/botfather) — it
-walks you through it in under a minute ([full instructions](https://core.telegram.org/bots#botfather)).
 
 ### 2. Calibrate the pumps
 
