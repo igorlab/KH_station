@@ -100,6 +100,16 @@ The two pumps don't all move at the same speed — on purpose:
 You can change any of these later (`setdosehz_`, `setfillhz_`, `sethomehz_`) if you've
 tested your build at a higher speed and trust it.
 
+### Keep the endstops out of the sun
+
+The limit switches are **optical** (a light beam across a slot). Direct sunlight, or a
+bright lamp shining into the slot, blinds them: the station then cannot tell that a
+syringe has reached home, and homing fails or ends in an error. This has happened on a
+real station. Place the station out of direct sun, or shade the endstops, keeping the
+slot itself clear for the flag that moves through it.
+If you see `Home can not be reached` or `endstop reads HOME but ... steps are still
+loaded` in the console, check the light on the endstops first.
+
 ---
 
 ## Getting started

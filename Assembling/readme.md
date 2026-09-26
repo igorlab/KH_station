@@ -54,6 +54,10 @@ Another parts:
 ![All parts](img/syringe_pump/15.jpg)
 ![All parts](img/syringe_pump/16.jpg)
 
+>**Optical endstops and light.** The LERDGE endstops are optical: direct sunlight or a
+>bright lamp falling into the slot blinds them, and homing stops working. Mount the pumps
+>so the endstops are shaded, or put the station somewhere without direct sun.
+
 ## 2. Mounting pumps to the housing
 
 ![All parts](img/other/3.jpg)
