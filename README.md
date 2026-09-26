@@ -177,6 +177,19 @@ inherits the error.
 Just open `http://<device-ip>/` — or `http://kh-station.local/` — nothing to install, no
 internet connection needed.
 
+[<img src="UI.png" alt="The KH station dashboard" width="900">](UI.png?raw=1)
+
+*Click for full size.*
+
+A whole run, from rinse to result:
+
+![A titration, start to finish](docs/kh-dashboard.gif)
+
+The bottle on the left is your reagent stock — the level drops as it gets used, and it
+tells you how many millilitres are left. The stir bar moves while the stirrer is
+running, and the two `home` lamps are the syringe limit switches: green when a syringe
+is parked, dark when it is not, amber if the switch cannot make up its mind.
+
 - **Header** — the latest KH, what the station is doing, and on the right the firmware
   version, the Wi-Fi network (orange when it's the backup) and its signal as 0–5 bars
 - **Station diagram** — both syringes, the reactor, the tubing, the stirrer, plus the
