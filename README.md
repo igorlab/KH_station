@@ -1,20 +1,48 @@
 # KH station
 
-A little machine that tests your reef tank's KH (carbonate hardness) for you —
-automatically, on a schedule — and texts you the result on Telegram. It also shows a
-live dashboard in your browser and can log every reading to
-[labaqua.net](https://labaqua.net/).
-
 ![License](https://img.shields.io/badge/license-GPL3.0-green)
 ![Release stable](https://badgen.net/github/release/igorlab/KH_station/stable)
 
-![All parts](Assembling/img/front1.jpg)
-![All parts](Assembling/img/back1.jpg)
+**An automatic KH tester for reef aquariums.** It takes a sample of tank water, titrates
+it with acid on its own schedule, and sends the result to your Telegram. A live
+dashboard runs in your browser, and every reading can also be logged to
+[labaqua.net](https://labaqua.net/).
+
+- Measures KH (carbonate hardness) by real titration to pH 4.10, no test kit or colour
+  chart
+- Runs on a schedule, rinses itself, and re-checks any result that looks off
+- Controlled from Telegram, a web page on your network, or USB
+- Updates its own firmware over Wi-Fi
+- Open hardware: 3D-printed parts, ESP32 board, schematics and parts list in this repo
+
+[<img src="UI.png" alt="The KH station web dashboard" width="900">](UI.png?raw=1)
+
+*The web dashboard: latest KH, a live diagram of the station, the titration curve and
+the console. Click for full size.*
+
+<table>
+<tr>
+<td width="50%"><img src="docs/kh-dashboard.gif" alt="A titration on the dashboard, start to finish"></td>
+<td width="50%"><img src="Assembling/img/1.jpg" alt="A built KH station next to a reef tank"></td>
+</tr>
+<tr>
+<td><em>One whole run on the dashboard, from rinse to result</em></td>
+<td><em>A built station next to the tank</em></td>
+</tr>
+</table>
 
 [![Build and demo video](https://markdown-videos.vercel.app/youtube/T8ol2PM2Kjg)](https://youtu.be/T8ol2PM2Kjg)
 
 Questions, feedback, or just want to see what other people are building? Join the
 [Arduino Aquarium titrator group chat](https://t.me/+Ad4m-7L7tV1lNGNi).
+
+**Contents:** [What it does](#what-it-does) ·
+[Hardware](#hardware) ·
+[Getting started](#getting-started) ·
+[Web dashboard](#web-dashboard) ·
+[Commands](#command-reference) ·
+[Firmware updates](#firmware-updates) ·
+[Building from source](#building-from-source)
 
 ---
 
@@ -54,20 +82,14 @@ row still don't agree, it tells you something's off instead of guessing.
 
 ---
 
-## Repository layout
-
-| Path | What's in it |
-|---|---|
-| `firmware/` | `firmware.bin` and `bin_version.txt` — what your station downloads when it updates itself |
-| `PCB/` | schematics (main board and pH front end) and the parts list |
-| `STL/` | every 3D-printed part: pump bodies, carriage, reactor holder, valve rotors, stirrer |
-| `Assembling/` | build photos and notes |
-| `docs/` | step-by-step guides — [creating your Telegram bot and finding your ID](docs/telegram-setup.md) |
-| `tools/kh_loader/` | a small helper sketch for upgrading an older station (see below) |
-
----
-
 ## Hardware
+
+![The station from the front, with its parts labelled](docs/station-front.jpg)
+
+![The station from the back, with its parts labelled](docs/station-back.jpg)
+
+Full build guide with photos: [Assembling](Assembling/readme.md). Printed parts:
+[STL](STL/). Board: [PCB](PCB/).
 
 - **ESP32** (DOIT DEVKIT V1 or similar, 4 MB flash)
 - **Two syringe pumps** — one for reagent (10 ml), one for the water sample (25 ml).
@@ -187,13 +209,7 @@ inherits the error.
 Just open `http://<device-ip>/` — or `http://kh-station.local/` — nothing to install, no
 internet connection needed.
 
-[<img src="UI.png" alt="The KH station dashboard" width="900">](UI.png?raw=1)
-
-*Click for full size.*
-
-A whole run, from rinse to result:
-
-![A titration, start to finish](docs/kh-dashboard.gif)
+(Screenshots are [at the top](#kh-station).)
 
 The bottle on the left is your reagent stock — the level drops as it gets used, and it
 tells you how many millilitres are left. The stir bar moves while the stirrer is
@@ -309,6 +325,20 @@ nothing to type into the sketch. To use a different network, fill in `WIFI_SSID`
 `WIFI_PASS` at the top.
 
 Already on 2.3 or newer? You can just update normally from Telegram.
+
+---
+
+## Repository layout
+
+| Path | What's in it |
+|---|---|
+| `firmware/` | `firmware.bin` and `bin_version.txt` — what your station downloads when it updates itself |
+| `PCB/` | schematics (main board and pH front end) and the parts list |
+| `STL/` | every 3D-printed part: pump bodies, carriage, reactor holder, valve rotors, stirrer |
+| `Assembling/` | build photos and notes |
+| `docs/` | step-by-step guides — [creating your Telegram bot and finding your ID](docs/telegram-setup.md) |
+| `tools/kh_loader/` | a small helper sketch for upgrading an older station (see [Upgrading](#upgrading-a-station-thats-been-running-for-a-long-time)) |
+| `tools/readme_images/` | the script that draws the labelled station pictures in `docs/` |
 
 ---
 
