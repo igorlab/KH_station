@@ -338,6 +338,7 @@ Already on 2.3 or newer? You can just update normally from Telegram.
 | `Assembling/` | build photos and notes |
 | `docs/` | step-by-step guides — [creating your Telegram bot and finding your ID](docs/telegram-setup.md) |
 | `tools/kh_loader/` | a small helper sketch for upgrading an older station (see [Upgrading](#upgrading-a-station-thats-been-running-for-a-long-time)) |
+| `tools/readme_images/` | the script that draws the labelled station pictures in `docs/` |
 
 ---
 
