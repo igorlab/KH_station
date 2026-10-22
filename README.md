@@ -140,10 +140,19 @@ loaded` in the console, check the light on the endstops first.
 
 **Wi-Fi first.** On its first start the station opens its own Wi-Fi access point called
 **AutoConnectAP**. Join it from your phone, pick your network and type its password —
-the station remembers it and connects from then on. (It opens AutoConnectAP again
-whenever it can't reach that network at startup — but since firmware 2.5.6 it no longer
-waits there: it keeps titrating, looks for its network every minute and reconnects by
-itself, so after a power cut it comes back even if the router starts slower than it.)
+the station remembers it as **Wi-Fi 1** and connects from then on.
+
+It looks after the connection by itself (firmware 3.1.0 and newer):
+
+- **Router restarted, or Wi-Fi dropped for a while?** The station keeps looking for its
+  networks every ~15 seconds, for as long as it takes, and reconnects on its own.
+- **Power cut?** The station usually starts faster than the router. It begins
+  titrating offline and joins as soon as the router is back; its start-up message then
+  arrives as usual, with a line saying how long the network took to appear.
+- **AutoConnectAP comes back only** if none of the saved networks has been in range for
+  **10 minutes** — for example after moving the station to a new place — or if no
+  network is saved at all. Even then it keeps titrating and keeps looking for its
+  networks every minute.
 
 **Then Telegram.** You need a bot of your own and your numeric Telegram ID —
 **[Setting up Telegram](docs/telegram-setup.md)** walks you through both in about five
@@ -168,11 +177,15 @@ power supply, a crash or a command — and `lastreset` repeats it. If your stati
 restarting on its own, that line is the thing to send when you ask for help. Bot
 silent? See [If the bot stays silent](docs/telegram-setup.md#if-the-bot-stays-silent).
 
-**Optional: a backup Wi-Fi network** (firmware 2.5.4 and newer). If the main network is
-unreachable for a minute, the station joins the backup by itself and tells you in
-Telegram. Set it on the `/settings` page, or with
-`wifibackup_<network name>#<password>`. `wifibackup` shows which network it is on,
-`wifiswitch` changes over by hand.
+**Optional: a second Wi-Fi network** (firmware 3.1.0 and newer). The station keeps two,
+**Wi-Fi 1** and **Wi-Fi 2**, and neither is the "main" one: it joins whichever is in
+range — the stronger one if both are — and stays on it while it works. Set them on the
+`/settings` page, or with `wifi1_<network name>#<password>` and
+`wifi2_<network name>#<password>`. `wifinets` shows both and which one is in use,
+`wifiswitch` changes over by hand. A network chosen in AutoConnectAP becomes Wi-Fi 1 and
+the previous Wi-Fi 1 moves to Wi-Fi 2. (Firmware 2.5.x had a main network and a backup
+set with `wifibackup_`; that command still works and sets Wi-Fi 2. Updating to 3.1.0
+keeps both networks: the main one becomes Wi-Fi 1, the backup Wi-Fi 2.)
 
 ### 2. Calibrate the pumps
 
@@ -217,7 +230,7 @@ running, and the two `home` lamps are the syringe limit switches: green when a s
 is parked, dark when it is not, amber if the switch cannot make up its mind.
 
 - **Header** — the latest KH, what the station is doing, and on the right the firmware
-  version, the Wi-Fi network (orange when it's the backup) and its signal as 0–5 bars
+  version, the Wi-Fi network (Wi-Fi 1 or 2) and its signal as 0–5 bars
 - **Station diagram** — both syringes, the reactor, the tubing, the stirrer, plus the
   numbers you actually care about: pH, KH, ml dosed
 - **Titration curve** — pH plotted against volume as it doses, so you can see the shape
@@ -274,9 +287,19 @@ won't run while a titration is in progress.
 | `stirrerd_<0..255>` | 220 |
 | `settings`, `getcalvalues` | Show everything that's currently stored |
 
+**Wi-Fi** (firmware 3.1.0 and newer)
+
+| Command | What it does |
+|---|---|
+| `wifinets` | Both saved networks, which one is in use, signal and IP |
+| `wifi1_<name>#<password>`, `wifi2_<name>#<password>` | Save Wi-Fi 1 / Wi-Fi 2 (nothing after `#` for an open network) |
+| `wifi1clear`, `wifi2clear` | Forget one of them (the only saved network can't be removed) |
+| `wifiswitch` | Move to the other saved network now |
+
 **System**
 
-`restart`, `getip`, `freeheap`, `gettime`, `checkupdate`, `updatedevice`, `sendlogs`
+`restart`, `getip`, `freeheap`, `gettime`, `checkupdate`, `updatedevice`, `rollback`,
+`lastreset`, `sendlogs`
 
 ---
 
@@ -286,6 +309,12 @@ The station checks `firmware/bin_version.txt` in this repo, and if there's a new
 version, it'll offer to update from the Telegram **Update** menu. Sending
 `updatedevice` downloads `firmware/firmware.bin` over a secure connection and installs
 it — no cable needed.
+
+**Firmware 3.x** (3.1.0, October 2026) is a rewrite of 2.5.x with the same commands,
+dashboard and Telegram menus; updating from 2.5.x keeps every setting and calibration.
+If anything looks wrong after an update, `rollback` goes back to the firmware you had
+before in a few seconds, without a download — the previous version is still on the
+board.
 
 ---
 
@@ -352,7 +381,7 @@ pio run -t upload       # flash over USB
 `platformio.ini` points at a specific fork of the ESP32 platform:
 
 ```ini
-platform = https://github.com/pioarduino/platform-espressif32.git#55.03.311
+platform = https://github.com/pioarduino/platform-espressif32.git#55.03.312-1
 ```
 
 That's intentional — the mainstream platform hasn't caught up to the newer Arduino
